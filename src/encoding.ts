@@ -26,19 +26,19 @@ export function decode(array: Uint8Array, offset: number, length: number): strin
     }
 }
 
-if (typeof require !== undefined) {
-    let decoder: StringDecoder | undefined;
-    try {
-        const { StringDecoder } = require('string_decoder') as { StringDecoder: any };
-        const decoder = new StringDecoder('utf8') as StringDecoder;
-        if (decoder) {
-            _decode = (array: Uint8Array, offset: number, length: number) => {
-                return decoder.end(array.subarray(offset, offset + length));
-            }
-        }
-    } catch (e) {
-    }
-}
+// if (typeof require !== undefined) {
+//     let decoder: StringDecoder | undefined;
+//     try {
+//         const { StringDecoder } = require('string_decoder') as { StringDecoder: any };
+//         const decoder = new StringDecoder('utf8') as StringDecoder;
+//         if (decoder) {
+//             _decode = (array: Uint8Array, offset: number, length: number) => {
+//                 return decoder.end(array.subarray(offset, offset + length));
+//             }
+//         }
+//     } catch (e) {
+//     }
+// }
 
 if (_decode === undefined && typeof TextDecoder !== 'undefined') {
     const decoder = new TextDecoder();

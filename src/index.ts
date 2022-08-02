@@ -2,7 +2,6 @@ import { ELFOpenResult } from "./types";
 import * as reader from "./reader";
 
 import { readElf, OpenOptions } from "./parser";
-import * as fs from "fs/promises";
 
 function isReader(item: any): item is reader.Reader {
     return typeof item === 'object' &&
@@ -13,12 +12,12 @@ function isReader(item: any): item is reader.Reader {
         typeof item.view === 'function';
 }
 
-function isFileHandle(item: any): item is fs.FileHandle {
-    return typeof item === 'object' &&
-        typeof item.fd === 'number' &&
-        typeof item.stat === 'function' &&
-        typeof item.read === 'function';
-}
+// function isFileHandle(item: any): item is fs.FileHandle {
+//     return typeof item === 'object' &&
+//         typeof item.fd === 'number' &&
+//         typeof item.stat === 'function' &&
+//         typeof item.read === 'function';
+// }
 
 function isBlob(item: any): item is reader.Blob {
     return typeof item === 'object' &&
@@ -37,7 +36,7 @@ const defaultOptions: OpenOptions = {
  * @param {function} [callback] When specified, this will be called after the file is done parsing.
  * @returns {Promise<ELFOpenResult>} a result indicating the success or failure of parsing and the data for the ELF file.
  */
-export function open(input: Uint8Array | ArrayBuffer | Array<number> | reader.Reader | string | number | fs.FileHandle | string | reader.Blob,
+export function open(input: Uint8Array | ArrayBuffer | Array<number> | reader.Reader | string | number | string | reader.Blob,
     options?: OpenOptions,
     callback?: (result: ELFOpenResult) => void | null): Promise<ELFOpenResult> {
 
@@ -55,15 +54,20 @@ export function open(input: Uint8Array | ArrayBuffer | Array<number> | reader.Re
         promise = readElf(reader.array(input), options);
     } else if (isReader(input)) {
         promise = readElf(input, options);
-    } else if (typeof input === 'number') {
-        promise = readElf(reader.syncfile(input), options);
-    } else if (isFileHandle(input)) {
-        promise = readElf(reader.asyncfile(input), options);
-    } else if (isBlob(input)) {
+    } 
+    // else if (typeof input === 'number') {
+    //     promise = readElf(reader.syncfile(input), options);
+    // } 
+    // else if (isFileHandle(input)) {
+    //     promise = readElf(reader.asyncfile(input), options);
+    // } 
+    else if (isBlob(input)) {
         promise = readElf(reader.blob(input), options);
-    } else if (typeof input === 'string') {
-        promise = readElf(reader.file(input), options);
-    } else {
+    } 
+    // else if (typeof input === 'string') {
+    //     promise = readElf(reader.file(input), options);
+    // } 
+    else {
         promise = new Promise((resolve) => {
             resolve({
                 success: false,

@@ -5,8 +5,6 @@ import { isSymbolSection, readSectionHeaderEntries } from "./sections";
 import { Reader } from "./reader";
 import { virtualAddressToFileOffset } from "./elf";
 import { add, toNumberSafe } from "./biginthelpers";
-import { read } from "fs";
-
 
 /** Options for reading an ELF file. */
 export interface OpenOptions {
@@ -197,7 +195,7 @@ export async function readElf(reader: Reader, options: OpenOptions): Promise<ELF
             }
         }
     } catch (e) {
-        errors.push(`Exception caught: ${e.toString()}`);
+        errors.push(`Exception caught: ${(e as Error).toString()}`);
     }
 
     // close the file
@@ -205,7 +203,7 @@ export async function readElf(reader: Reader, options: OpenOptions): Promise<ELF
         try {
             await reader.close();
         } catch (e) {
-            errors.push(`Exception caught: ${e.toString()}`);
+            errors.push(`Exception caught: ${(e as Error).toString()}`);
         }
     }
 
